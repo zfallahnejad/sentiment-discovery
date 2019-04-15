@@ -14,13 +14,14 @@ python main.py --nhid 64 --seed 123 --data ./data/twitter/tweets_iran_unique.jso
         --save output/lang_model_nhid64_ds128/lang_model_nhid64_ds128.pt
 ```
 
-
-
-python transfer.py --nhid 64 --epochs 10 --seed 123 --data_size 128 \
+```
+python transfer.py --nhid 64 --epochs 10 --seed 123 \
     --data data/twitter/train.csv \
     --valid data/twitter/val.csv \
     --test data/twitter/test.csv \
-    --load_model output/lang_model_nhid64/lang_model_nhid64.pt
+    --load output/lang_model_nhid64/lang_model_nhid64.pt
+```
+
 
 
 6.Apply following changes to transfer.py:
