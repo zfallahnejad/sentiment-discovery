@@ -8,32 +8,24 @@ Extract unique tweets from crawled tweets(`--input_file`) and remove mentions an
 python3.6 prepare_data.py --get_unique_tweets --input_file ./data/twitter/tweets.iran.txt --output_json_file ./data/twitter/tweets_iran_unique.json
 ```
 
-## Train
+## Train (colab)
 ```
-python3.6 main.py --nhid 64 --seed 123 --data ./data/twitter/tweets_iran_unique.json --loose-json \
+python main.py --nhid 64 --seed 123 --data ./data/twitter/tweets_iran_unique.json --loose-json \
         --save output/lang_model_nhid64_ds128/lang_model_nhid64_ds128.pt
 ```
 
 
-## Initial steps:
 
+python transfer.py --nhid 64 --epochs 10 --seed 123 --data_size 128 \
+    --data data/twitter/train.csv \
+    --valid data/twitter/val.csv \
+    --test data/twitter/test.csv \
+    --load_model output/lang_model_nhid64/lang_model_nhid64.pt
 
 
 6.Apply following changes to transfer.py:
-	* For non cuda systems change this line:
-		```
-		sd = x = torch.load(f)  -->  sd = x = torch.load(f, map_location='cpu')
-		```
 	* A little change at end of this file:
 		remove exit() and change if to if not.
-	* For `Persian` version change following lines:
-		```
-		data_parser.set_defaults(split='1.', data='data/binary_sst/train.csv')
-		data_parser.set_defaults(valid='data/binary_sst/val.csv', test='data/binary_sst/test.csv')
-		-->
-		data_parser.set_defaults(split='1.', data='data/Label/train.csv')
-		data_parser.set_defaults(valid='data/Label/val.csv', test='data/Label/test.csv')
-		```
 7. Apply following changes to classifier.py:
 	* change this line:
 	```

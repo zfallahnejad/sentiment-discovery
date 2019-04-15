@@ -260,7 +260,7 @@ def evaluate(data_source, max_iters):
             if isinstance(model, DDP):
                 torch.distributed.all_reduce(loss.data)
                 loss.data /= args.world_size
-            total_loss += loss.data[0]
+            total_loss += loss.data.item()
             i += 1
     return total_loss / max(max_iters, 1)
 

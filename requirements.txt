@@ -1,5 +1,4 @@
 numpy
-pytorch (>= 0.4.1)
 pandas
 scikit-learn
 matplotlib
