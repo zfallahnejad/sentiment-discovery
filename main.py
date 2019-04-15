@@ -359,7 +359,7 @@ def train(max_iters, total_iters=0, skipped_iters=0, elapsed_time=False):
     elapsed_iters = max_iters % args.log_interval
     if elapsed_iters == 0:
         elapsed_iters = args.log_interval
-    cur_loss = total_loss[0] / elapsed_iters
+    cur_loss = total_loss.item() / elapsed_iters
     cur_time = time.time()
     elapsed = cur_time - start_time
     total_elapsed = cur_time - t0 + elapsed_time

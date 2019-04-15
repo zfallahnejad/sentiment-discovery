@@ -50,7 +50,6 @@ python3.6 main.py --nhid 64 --seed 123 --data ./data/twitter/tweets_iran_unique.
 	*For Persian version:
 	```
 	args.data_size = 256 --> args.data_size = 128
-	sd = torch.load(f)-->sd = torch.load(f, map_location='cpu') ### English version worked fine without this change!!!!
 	```
 	```
 	matplotlib.use('Agg')
