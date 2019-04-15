@@ -6,6 +6,8 @@ import unicodedata
 import unidecode
 import torch
 
+from .text_normalizer import normalization_map,vocabulary_map,vocabulary_map_reverse
+
 try:
     import emoji
 except:
@@ -41,11 +43,11 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
     Processes utf-8 encoded text according to the criterion specified in seciton 4 of https://arxiv.org/pdf/1704.01444.pdf (Radford et al).
     We use unidecode to clean unicode text into ascii readable text
     """
-    if clean_markup:
-        text = clean_html(text)
-
-    if clean_unicode:
-        text = unidecode.unidecode(text)
+    # if clean_markup:
+    #     text = clean_html(text)
+    #
+    # if clean_unicode:
+    #     text = unidecode.unidecode(text)
 
     text = html.unescape(text)
     text = text.split()
@@ -56,7 +58,13 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
     if limit_repeats > 0:
         remove_repeats(text, limit_repeats, join=False)
 
-    text = front_pad+(" ".join(text))+end_pad
+    text = " ".join(text)
+
+    normalized_text = ""
+    for c in text:
+        if c in normalization_map:
+            normalized_text += normalization_map[c]
+    text = front_pad + normalized_text + end_pad
 
     if encode is not None:
         text = text.encode(encoding=encode)
@@ -91,10 +99,7 @@ def tokenize_str_batch(strings, rtn_maxlen=True, process=True, maxlen=None, ids=
         lens: Length of each string in strings after being preprocessed with `preprocess` (useful for
             dynamic length rnns). If `rtn_maxlen` is `True` then max(lens) is returned instead.
     """
-    if process:
-        processed_strings = [process_str(x, maxlen=maxlen) for x in strings]
-    else:
-        processed_strings = [x.encode('utf-8', 'replace') for x in strings]
+    processed_strings = [x for x in strings] # a list of all the training string, each element is a tweet
 
     tensor_type = torch.ByteTensor
 
@@ -115,9 +120,19 @@ def tokenize_str_batch(strings, rtn_maxlen=True, process=True, maxlen=None, ids=
 
 def batch_tokens(token_lists, tensor_type=torch.LongTensor, fill_value=0):
     lens = list(map(len, token_lists))
+    maxlen = max(lens)
     batch_tensor = fill_value * torch.ones(len(lens), max(lens)).type(tensor_type)
+    # for i, string in enumerate(token_lists):
+    #     _tokenize_str(string, tensor_type, batch_tensor[i])
+    # initialization
+    for i in range(len(lens)):
+        for j in range(maxlen):
+            batch_tensor[i][j] = 64  # space char
+    # Convert each string to a list of numbers in which each element is char code of coresponding char
     for i, string in enumerate(token_lists):
-        _tokenize_str(string, tensor_type, batch_tensor[i])
+        for j, char in enumerate(string):
+            batch_tensor[i][j] = vocabulary_map[char]
+        # _tokenize_str(string, batch_tensor[i])
     return batch_tensor, lens
 
 def _tokenize_str(data, tensor_type, char_tensor=None):

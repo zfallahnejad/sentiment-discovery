@@ -14,7 +14,7 @@ import data
 import model
 from model import DistributedDataParallel as DDP
 
-from apex.reparameterization import apply_weight_norm, remove_weight_norm
+from reparameterization import apply_weight_norm, remove_weight_norm
 from configure_data import configure_data
 from learning_rates import LinearLR
 

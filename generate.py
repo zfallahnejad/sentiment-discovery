@@ -13,7 +13,7 @@ import argparse
 import torch
 from torch.autograd import Variable
 
-from apex.reparameterization import apply_weight_norm, remove_weight_norm
+from reparameterization import apply_weight_norm, remove_weight_norm
 
 import model
 
