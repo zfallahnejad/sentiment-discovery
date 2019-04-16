@@ -20,6 +20,7 @@ import numpy as np
 from .preprocess import tokenize_str_batch, batch_tokens
 from .samplers import DistributedBatchSampler, BatchSampler, TransposedSampler, RandomShardSampler, DistributedBatchShardSampler, BatchShardSampler
 from .tokenization import Tokenization
+from .text_normalizer import normalization_map
 
 _use_shared_memory = False
 """Whether to use shared memory in default_collate"""
@@ -60,7 +61,14 @@ def default_collate(batch, maxlen=None, process=False):
     elif isinstance(batch[0], Tokenization):
         pad = batch[0].pad
         tokenization, text, original_text = zip(*([(tokenization.tokenization, tokenization.text, tokenization.original_text) for tokenization in batch]))
-        return [batch_tokens(tokenization, fill_value=pad)[0], text, original_text]
+        normalized_tokenization = []
+        for text in tokenization:
+            normalized_text = ""
+            for c in text:
+                if c in normalization_map:
+                    normalized_text += normalization_map[c]
+            normalized_tokenization.append(normalized_text)
+        return [batch_tokens(normalized_tokenization, fill_value=pad)[0], text, original_text]
     elif isinstance(batch[0], int):
         return torch.LongTensor(batch)
     elif isinstance(batch[0], float):
