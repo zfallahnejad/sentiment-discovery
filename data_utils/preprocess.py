@@ -131,7 +131,6 @@ def batch_tokens(token_lists, tensor_type=torch.LongTensor, fill_value=0):
     # Convert each string to a list of numbers in which each element is char code of coresponding char
     for i, string in enumerate(token_lists):
         for j, char in enumerate(string):
-            print(char)
             batch_tensor[i][j] = vocabulary_map[char]
         # _tokenize_str(string, batch_tensor[i])
     return batch_tensor, lens
