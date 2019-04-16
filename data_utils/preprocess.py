@@ -99,7 +99,14 @@ def tokenize_str_batch(strings, rtn_maxlen=True, process=True, maxlen=None, ids=
         lens: Length of each string in strings after being preprocessed with `preprocess` (useful for
             dynamic length rnns). If `rtn_maxlen` is `True` then max(lens) is returned instead.
     """
-    processed_strings = [x for x in strings] # a list of all the training string, each element is a tweet
+    # processed_strings = [x for x in strings] # a list of all the training string, each element is a tweet
+    processed_strings = []
+    for x in strings:
+        normalized_x = ""
+        for c in x:
+            if c in normalization_map:
+                normalized_x += normalization_map[c]
+        processed_strings.append(normalized_x)
 
     tensor_type = torch.ByteTensor
 
