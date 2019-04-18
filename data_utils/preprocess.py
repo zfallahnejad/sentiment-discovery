@@ -60,13 +60,12 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
 
     text = " ".join(text)
 
-    print(text)
     normalized_text = ""
     for c in text:
         if c in normalization_map:
             normalized_text += normalization_map[c]
     text = front_pad + normalized_text + end_pad
-    print(normalized_text)
+    print("normalized_text:", normalized_text)
 
     if encode is not None:
         text = text.encode(encoding=encode)
@@ -101,14 +100,7 @@ def tokenize_str_batch(strings, rtn_maxlen=True, process=True, maxlen=None, ids=
         lens: Length of each string in strings after being preprocessed with `preprocess` (useful for
             dynamic length rnns). If `rtn_maxlen` is `True` then max(lens) is returned instead.
     """
-    # processed_strings = [x for x in strings] # a list of all the training string, each element is a tweet
-    processed_strings = []
-    for x in strings:
-        normalized_x = ""
-        for c in x:
-            if c in normalization_map:
-                normalized_x += normalization_map[c]
-        processed_strings.append(normalized_x)
+    processed_strings = [x for x in strings] # a list of all the training string, each element is a tweet
 
     tensor_type = torch.ByteTensor
 
@@ -139,9 +131,7 @@ def batch_tokens(token_lists, tensor_type=torch.LongTensor, fill_value=0):
             batch_tensor[i][j] = 64  # space char
     # Convert each string to a list of numbers in which each element is char code of coresponding char
     for i, string in enumerate(token_lists):
-        print(i, string)
         for j, char in enumerate(string):
-            print(j, char,ascii(char))
             batch_tensor[i][j] = vocabulary_map[char]
         # _tokenize_str(string, batch_tensor[i])
     return batch_tensor, lens
@@ -184,7 +174,7 @@ def process_tweet(s, save_text_formatting=True, keep_emoji=False, keep_usernames
     else:
         s = re.sub(r'https\S+', r' ', str(s))
         s = re.sub(r'x{3,5}', r' ', str(s))
-    
+
     # Try to rewrite all non-ASCII if known printable equivalent
     s = re.sub(r'\\n', ' ', s)
     s = re.sub(r'\s', ' ', s)
