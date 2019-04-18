@@ -6,6 +6,8 @@ import numpy as np
 import unidecode
 import torch
 
+from .text_normalizer import normalization_map,vocabulary_map,vocabulary_map_reverse
+
 try:
     import emoji
 except:
@@ -56,11 +58,13 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
     if limit_repeats > 0:
         remove_repeats(text, limit_repeats, join=False)
 
-    text = front_pad+(" ".join(text))+end_pad
+    text = " ".join(text)
 
-    if encode is not None:
-        text = text.encode(encoding=encode)
-        text = ''.join(chr(c) for c in text)
+    normalized_text = ""
+    for c in text:
+        if c in normalization_map:
+            normalized_text += normalization_map[c]
+    text = front_pad + normalized_text + end_pad
 
     return text
 
