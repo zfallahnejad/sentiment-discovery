@@ -195,7 +195,7 @@ class csv_dataset(data.Dataset):
         X (list): all strings from the csv file
         Y (np.ndarray): labels to train against
     """
-    def __init__(self, path, tokenizer=None, preprocess_fn=None, delim=',',
+    def __init__(self, path, tokenizer=None, preprocess_fn=process_str, delim=',',
                 binarize_sent=False, drop_unlabeled=False, text_key='sentence', label_key='label',
                 **kwargs):
         self.preprocess_fn = preprocess_fn
