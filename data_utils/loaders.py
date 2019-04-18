@@ -59,6 +59,9 @@ def default_collate(batch, maxlen=None, process=False):
             return numpy_type_map[elem.dtype.name](list(map(py_type, batch)))
     elif isinstance(batch[0], Tokenization):
         pad = batch[0].pad
+        print("test:")
+        for tokenization in batch:
+            print(tokenization.tokenization, tokenization.text, tokenization.original_text)
         tokenization, text, original_text = zip(*([(tokenization.tokenization, tokenization.text, tokenization.original_text) for tokenization in batch]))
         return [batch_tokens(tokenization, fill_value=pad)[0], text, original_text]
     elif isinstance(batch[0], int):

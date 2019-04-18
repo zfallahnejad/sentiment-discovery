@@ -65,7 +65,6 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
         if c in normalization_map:
             normalized_text += normalization_map[c]
     text = front_pad + normalized_text + end_pad
-    print("normalized_text:", normalized_text)
 
     if encode is not None:
         text = text.encode(encoding=encode)
