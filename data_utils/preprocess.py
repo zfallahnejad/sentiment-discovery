@@ -43,7 +43,6 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
     Processes utf-8 encoded text according to the criterion specified in seciton 4 of https://arxiv.org/pdf/1704.01444.pdf (Radford et al).
     We use unidecode to clean unicode text into ascii readable text
     """
-    print(text)
     # if clean_markup:
     #     text = clean_html(text)
     #
@@ -61,11 +60,13 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
 
     text = " ".join(text)
 
+    print(text)
     normalized_text = ""
     for c in text:
         if c in normalization_map:
             normalized_text += normalization_map[c]
     text = front_pad + normalized_text + end_pad
+    print(normalized_text)
 
     if encode is not None:
         text = text.encode(encoding=encode)
