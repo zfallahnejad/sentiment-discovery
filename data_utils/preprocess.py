@@ -2,7 +2,7 @@ import os
 import re
 import html
 import unicodedata
-
+import numpy as np
 import unidecode
 import torch
 
@@ -41,11 +41,11 @@ def process_str(text, front_pad='\n ', end_pad=' ', maxlen=None, clean_markup=Tr
     Processes utf-8 encoded text according to the criterion specified in seciton 4 of https://arxiv.org/pdf/1704.01444.pdf (Radford et al).
     We use unidecode to clean unicode text into ascii readable text
     """
-    if clean_markup:
-        text = clean_html(text)
-
-    if clean_unicode:
-        text = unidecode.unidecode(text)
+    # if clean_markup:
+    #     text = clean_html(text)
+    #
+    # if clean_unicode:
+    #     text = unidecode.unidecode(text)
 
     text = html.unescape(text)
     text = text.split()

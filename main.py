@@ -14,7 +14,7 @@ import data
 import model
 from model import DistributedDataParallel as DDP
 
-from apex.reparameterization import apply_weight_norm, remove_weight_norm
+from reparameterization import apply_weight_norm, remove_weight_norm
 from configure_data import configure_data
 from learning_rates import LinearLR
 
@@ -260,7 +260,7 @@ def evaluate(data_source, max_iters):
             if isinstance(model, DDP):
                 torch.distributed.all_reduce(loss.data)
                 loss.data /= args.world_size
-            total_loss += loss.data[0]
+            total_loss += loss.data.item()
             i += 1
     return total_loss / max(max_iters, 1)
 
@@ -326,7 +326,7 @@ def train(max_iters, total_iters=0, skipped_iters=0, elapsed_time=False):
 
         # log current results
         if ((i+1) % args.log_interval == 0) and (i != max_iters - 1):
-            cur_loss = total_loss[0] / args.log_interval
+            cur_loss = total_loss.item() / args.log_interval
             cur_time = time.time()
             elapsed = cur_time - start_time
             total_elapsed = cur_time - t0 + elapsed_time
@@ -359,7 +359,7 @@ def train(max_iters, total_iters=0, skipped_iters=0, elapsed_time=False):
     elapsed_iters = max_iters % args.log_interval
     if elapsed_iters == 0:
         elapsed_iters = args.log_interval
-    cur_loss = total_loss[0] / elapsed_iters
+    cur_loss = total_loss.item() / elapsed_iters
     cur_time = time.time()
     elapsed = cur_time - start_time
     total_elapsed = cur_time - t0 + elapsed_time
