@@ -218,9 +218,9 @@ class csv_dataset(data.Dataset):
                 cols += label_key
             else:
                 cols += [label_key]
-            data = pd.read_csv(self.path, sep=self.delim, usecols=cols, encoding='utf8')
+            data = pd.read_csv(self.path, sep=self.delim, usecols=cols, encoding='latin-1')
         except:
-            data = pd.read_csv(self.path, sep=self.delim, usecols=[text_key], encoding='utf8')
+            data = pd.read_csv(self.path, sep=self.delim, usecols=[text_key], encoding='latin-1')
 
         data = data.dropna(axis=0)
 
@@ -257,7 +257,7 @@ class csv_dataset(data.Dataset):
         if path is None:
             path = self.path+'.results'
         print('generating csv at ' + path)
-        with open(path, 'w', encoding='utf8', newline='') as csvfile:
+        with open(path, 'w') as csvfile:
             c = csv.writer(csvfile, delimiter=self.delim)
             if writer_gen is not None:
                 #if first item of generator is a header of what the metrics mean then write header to csv file
@@ -365,24 +365,24 @@ class json_dataset(data.Dataset):
 
     def save_json_stream(self, save_path, json_stream):
         if self.loose_json:
-            with open(save_path, 'w', encoding='utf8') as f:
+            with open(save_path, 'w') as f:
                 for i, j in enumerate(json_stream):
                     write_string = ''
                     if i != 0:
                         write_string = '\n'
-                    write_string += json.dumps(j,ensure_ascii=False)
+                    write_string += json.dumps(j)
                     f.write(write_string)
         else:
             jsons = [j for j in json_stream]
-            json.dump(jsons, open(save_path, 'w', encoding='utf8'),ensure_ascii=False, separators=(',', ':'))
+            json.dump(jsons, open(save_path, 'w'), separators=(',', ':'))
 
     def load_json_stream(self, load_path):
         if not self.loose_json:
-            jsons = json.load(open(load_path, 'r', encoding='utf8'))
+            jsons = json.load(open(load_path, 'r'))
             generator = iter(jsons)
         else:
             def gen_helper():
-                with open(load_path, 'r', encoding='utf8') as f:
+                with open(load_path, 'r') as f:
                     for row in f:
                         yield json.loads(row)
             generator = gen_helper()

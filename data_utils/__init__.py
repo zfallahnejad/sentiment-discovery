@@ -7,7 +7,6 @@ from .preprocess import tokenize_str_batch, binarize_labels, process_str, proces
 from .datasets import json_dataset, csv_dataset, split_ds, get_processed_path, ConcatDataset, SplitDataset, data_shard
 from .lazy_loader import exists_lazy, make_lazy, lazy_array_loader
 from .tokenization import Tokenization, CommandToken, Tokenizer, CharacterLevelTokenizer, make_tokenizer
-from .text_normalizer import normalization_map,vocabulary_map,vocabulary_map_reverse
 
 TRAIN_DATA = 0
 VAL_DATA = 1
