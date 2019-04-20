@@ -67,7 +67,7 @@ parser.add_argument('--text', default='',
                     help='warm up generation with specified text first')
 args = parser.parse_args()
 
-args.data_size = 128
+args.data_size = 127
 
 args.cuda = torch.cuda.is_available()
 
