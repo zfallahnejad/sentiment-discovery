@@ -6,7 +6,7 @@ import numpy as np
 import unidecode
 import torch
 
-from .text_normalizer import normalization_map,vocabulary_map,vocabulary_map_reverse
+from .text_normalizer import normalization_map
 
 try:
     import emoji

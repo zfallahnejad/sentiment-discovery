@@ -3,6 +3,7 @@ import random
 import os
 
 import sentencepiece as spm
+from .text_normalizer import vocabulary_map, vocabulary_map_reverse
 
 def make_tokenizer(tokenizer_type, corpus, model_path=None, vocab_size=None, model_type='bpe', pad_token=0, character_coverage=1.0):
     tokenizer_class = tokenizer_type
@@ -121,7 +122,7 @@ class Tokenizer(object):
 
 class CharacterLevelTokenizer(Tokenizer):
     def __init__(self, pad_token=0, **kwargs):
-        self.num_text_tokens = 256
+        self.num_text_tokens = 128 # 256
         super(CharacterLevelTokenizer, self).__init__(prep_command_tokens([('pad', pad_token)]))
 
     @staticmethod
@@ -148,10 +149,10 @@ class CharacterLevelTokenizer(Tokenizer):
         return Tokenization(tokens, processed_text, text, self.command_tokens, asIds=False)
 
     def IdToToken(self, Id):
-        return chr(Id - self.num_command_tokens)
+        return vocabulary_map_reverse[Id] # chr(Id - self.num_command_tokens)
 
     def TokenToId(self, token):
-        return ord(token) + self.num_command_tokens
+        return vocabulary_map[token] # ord(token) + self.num_command_tokens
 
     def DecodeIds(self, Ids):
         if isinstance(Ids, Tokenization):
