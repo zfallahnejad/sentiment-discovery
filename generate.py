@@ -12,7 +12,7 @@ import argparse
 
 import torch
 from torch.autograd import Variable
-
+from data_utils.text_normalizer import vocabulary_map, vocabulary_map_reverse
 from reparameterization import apply_weight_norm, remove_weight_norm
 
 import model
@@ -67,7 +67,7 @@ parser.add_argument('--text', default='',
                     help='warm up generation with specified text first')
 args = parser.parse_args()
 
-args.data_size = 256
+args.data_size = 128
 
 args.cuda = torch.cuda.is_available()
 
@@ -149,7 +149,7 @@ def process_text(text, model, input, temperature, neuron=None, mask=False, overw
     chrs = []
     vals = []
     for c in text:
-        input.data.fill_(int(ord(c)))
+        input.data.fill_(vocabulary_map[c])
         if neuron:
             ch, val = model_step(model, input, neuron, mask, overwrite, polarity)
             vals.append(val)
@@ -211,12 +211,12 @@ mask = args.overwrite is not None
 model.eval()
 
 hidden = model.rnn.init_hidden(1)
-input = Variable(torch.LongTensor([int(ord('\n'))]))
+input = Variable(torch.LongTensor([vocabulary_map['\n']]))
 if args.cuda:
     input = input.cuda()
 input = input.view(1,1).contiguous()
 model_step(model, input, neuron, mask, args.overwrite, polarity)
-input.data.fill_(int(ord(' ')))
+input.data.fill_(vocabulary_map[' '])
 out = model_step(model, input, neuron, mask, args.overwrite, polarity)
 if neuron is not None:
     out = out[0]
@@ -235,7 +235,7 @@ with torch.no_grad():
     outvals += vals
 outstr = ''.join(outchrs)
 print(outstr)
-with open(args.save, 'w') as f:
+with open(args.save, 'w', encoding="utf8") as f:
     f.write(outstr)
 
 if args.visualize:
